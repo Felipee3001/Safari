@@ -1,0 +1,1551 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terminal Parque Safari</title>
+        <style>
+            /* --- ESTILOS DE IDENTIDAD CORPORATIVA --- */
+            :root {
+                --primary-color: #126d08;    
+                --secondary-color: #ff4800;  
+                --bg-color: #4b4b4b;         
+                --dark-color: #704626;       
+                --white: #d1cfcb;
+                --success-color: #2ECC71;    
+                --text-dark: #1E293B;
+                --border-color: #CBD5E1;
+                --danger-color: #E74C3C;
+            }
+
+            * {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+                font-family: 'Segoe UI', Arial, sans-serif;
+            }
+
+            /* ========================================================
+               💥 1. ANCLAJE OBLIGATORIO DEL FONDO DEGRADADO
+               ======================================================== */
+            body {
+                background-image: url("img/fondo_guepardo.jpg") !important;
+                background-size: cover !important;
+                background-position: center center !important;
+                background-repeat: no-repeat !important;
+                background-attachment: fixed !important;
+            }
+
+            /* Vaciamos de forma transparente cualquier contenedor estructural intermedio */
+            .app-container, 
+            .main-content, 
+            .pos-container, 
+            .views-container,
+            main,
+            .grid-products-wrapper,
+            #catalogo-seccion,
+            div[class*="container"],
+            .mesas-layout,
+            .kds-container {
+                background-color: transparent !important;
+                background: transparent !important;
+            }
+
+            /* --- CONTENEDOR CANVAS TOTALMENTE TRANSLÚCIDO --- */
+            .safari-canvas {
+                width: 100%;
+                max-width: 1920px;
+                min-height: 100vh;
+                background-color: transparent !important;
+                color: var(--dark-color);
+                display: flex;
+                flex-direction: column;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+                border-radius: 8px;
+                overflow: hidden;
+                backdrop-filter: blur(2px); 
+            }
+
+            /* --- LINK DE INICIO --- */
+            .brand-link {
+                cursor: pointer;
+                transition: transform 0.2s ease, opacity 0.2s ease;
+            }
+            .brand-link:hover {
+                transform: scale(0.96);
+                opacity: 0.90;
+            }
+
+            .brand-link:active {
+                transform: scale(0.92);
+            }
+
+            /* --- NOTIFICACIÓN FLOTANTE ÉXITO --- */
+            .notificacion-safari-toast {
+                position: fixed;
+                top: 20px;
+                left: 50%;
+                transform: translate(-50%);
+                background-color: var(--primary-color); 
+                color: white;
+                padding: 15px 25px;
+                border-radius: 6px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+                font-weight: bold;
+                z-index: 9999;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                animation: slideDownToast 0.3s ease forwards;
+            }
+
+            #container-cocina {
+                max-height: 600px !important;    
+                overflow-y: auto !important;    
+                padding-right: 8px !important;  
+            }
+            #container-cocina::-webkit-scrollbar {
+                width: 6px;
+            }
+            #container-cocina::-webkit-scrollbar-track {
+                background: rgba(0, 0, 0, 0.05);
+                border-radius: 10px;
+            }
+            #container-cocina::-webkit-scrollbar-thumb {
+                background: rgba(0, 0, 0, 0.2);
+                border-radius: 10px;
+            }
+            #container-cocina::-webkit-scrollbar-thumb:hover {
+                background: rgba(0, 0, 0, 0.35);
+            }
+
+
+
+            @keyframes slideDownToast {
+                from { transform: translate(-50%, -100px); opacity: 0; }
+                to { transform: translate(-50%, 0); opacity: 1; }
+            }
+            
+            @keyframes fadeInPage { to { opacity: 2; } }
+
+            /* --- VIDEO DE FONDO RESPALDO --- */
+            .video-fondo-safari {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100vw;
+                height: 100vh;
+                object-fit: cover; 
+                z-index: -2;
+            }
+
+            /* --- BARRA DE NAVEGACIÓN SUPERIOR --- */
+            .navbar-simulador {
+                background-color: #5e3015d8;
+                color: var(--white);
+                padding: 15px 30px; 
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                border-bottom: 4px solid var(--secondary-color);
+                gap: 20px; 
+            }
+
+            .navbar-simulador .brand { 
+                font-size: 25px; 
+                font-weight: bold; 
+                color: #f7cea5; 
+            } 
+            .navbar-simulador .brand span { color: #f7cea5; }
+            .navbar-logo-safari { height: 60px; width: auto; object-fit: contain; }
+
+            .nav-tabs { 
+                display: flex; 
+                gap: 15px; 
+                margin-left: auto; 
+            }            
+
+            .tab-btn {
+                background-color: rgba(255,255,255,0.1);
+                color: var(--white);
+                border: none;
+                padding: 12px 24px;
+                font-size: 16px;
+                font-weight: 600;
+                border-radius: 6px;
+                cursor: pointer;
+                transition: all 0.2s ease;
+            }
+            .tab-btn:hover, .tab-btn.active { background-color: var(--primary-color); }
+
+            .btn-logout-top {
+                background-color: #C0392B;
+                color: var(--white);
+                border: none;
+                padding: 12px 20px;
+                border-radius: 6px;
+                cursor: pointer;
+                font-weight: bold;
+                text-decoration: none;
+                font-size: 14px;
+                white-space: nowrap; 
+                transition: background-color 0.2s ease;
+            }
+            .btn-logout-top:hover { 
+                background-color: #5f0b03; 
+            }
+
+
+            /* --- CONTENEDOR DE PANTALLAS TABS --- */
+
+            .view-content { 
+                display: none; 
+                flex: 1; 
+                padding: 25px; 
+            }
+            .view-content.active { display: flex; }
+
+            /* =====================================
+               🧱 2. PANTALLA: TERMINAL DE VENTAS 
+               =====================================*/
+            .ventas-container { display: grid; grid-template-columns: 2fr 1fr; width: 100%; gap: 20px; }
+            .catalog-section { display: flex; flex-direction: column; gap: 15px; }
+            .categories-bar { display: flex; gap: 10px; }
+
+            .category-pill {
+                background-color: #a7d87f !important; 
+                border: 5px solid var(--primary-color);
+                color: var(--primary-color);
+                padding: 12px 25px;
+                border-radius: 30px;
+                font-weight: bold;
+                cursor: pointer;
+                box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+                transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+            }
+
+            .category-pill:hover {
+                background-color: #1E8449 !important; 
+                color: #FFFFFF !important;            
+                border-color: #1E8449 !important;     
+            }
+
+            .category-pill.active {
+                background-color: var(--primary-color) !important;
+                color: var(--white) !important;
+                border-color: var(--primary-color) !important;
+            }
+
+            .grid-products { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 15px; }
+
+            .product-card {
+                background-color: #FFFFFF !important; 
+                border-radius: 15px;
+                padding: 25px;
+                text-align: center;
+                box-shadow: 0 4px 10px rgba(0,0,0,0.08) !important;
+                border: 5px solid #edffde !important;
+                cursor: pointer;
+                height: 160px !important;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+            }
+
+            .product-card:hover {
+                transform: translateY(-4px); 
+                box-shadow: 0 8px 20px rgba(18, 109, 8, 0.15) !important; 
+                border-color: #348b2a !important; 
+                background-color: #73af73 !important; 
+            }
+
+            .product-card:active {
+                transform: translateY(-1px);
+                background-color: #EAF2F8 !important;
+            }        
+
+            .product-card h4 { font-size: 18px; margin-bottom: 10px; color: var(--text-dark); }
+            .product-card .price { color: var(--primary-color); font-weight: bold; font-size: 22px; }
+
+            /* Panel lateral derecho del Carrito (Detalle de Pedido) */
+            .cart-section {
+                background-color: rgba(255, 255, 255, 0.96) !important; 
+                border-radius: 55px !important;
+                padding: 20px;
+                box-shadow: 0 8px 24px rgba(0,0,0,0.15) !important;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                border-top: 16px solid var(--success-color) !important;
+
+                height: calc(100vh - 140px) !important; 
+                max-height: 720px !important;                            
+                box-sizing: border-box !important; 
+            }
+
+            .cart-title { 
+                font-size: 20px; 
+                border-bottom: 2px solid #E2E8F0; 
+                padding-bottom: 10px; color: var(--primary-color); 
+                font-weight: bold; 
+            }
+            
+            /* --- LISTADO INTERNO DE PRODUCTOS (BOLETA DINÁMICA) --- */
+            .cart-items { 
+                flex: 1 !important; 
+                max-height: 290px !important;  
+                overflow-y: auto !important;   
+                padding: 10px 5px !important; 
+                box-sizing: border-box !important;
+            }
+
+            /* 🎨 DISEÑO MODERNO PARA LA BARRA DE LA BOLETA (OPCIONAL) */
+            .cart-items::-webkit-scrollbar {
+                width: 5px;
+            }
+
+            .cart-items::-webkit-scrollbar-track {
+                background: transparent;
+            }
+
+            .cart-items::-webkit-scrollbar-thumb {
+                background: rgba(18, 109, 8, 0.2);
+                border-radius: 10px;
+            }
+ 
+
+            .cart-item-details {
+                display: flex;
+                flex-direction: column;
+                gap: 2px;
+                max-width: 55%;
+            }
+
+            .cart-item-name {
+                font-weight: 700;
+                font-size: 13px;
+                color: var(--text-dark);
+            }
+
+            .cart-item-subtotal {
+                font-size: 12px;
+                color: var(--primary-color);
+                font-weight: 800;
+            }
+
+            .cart-item-controls {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+            /* STEPPER: [-] CANTIDAD [+] */
+            .qty-stepper {
+                display: flex;
+                align-items: center;
+                background-color: #FFFFFF;
+                border-radius: 6px;
+                border: 1px solid var(--border-color);
+                overflow: hidden;
+            }
+
+            .btn-qty {
+                background-color: #E2E8F0;
+                color: var(--text-dark);
+                border: none;
+                width: 28px;
+                height: 28px;
+                font-size: 16px;
+                font-weight: bold;
+                cursor: pointer;
+                transition: background 0.15s;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .btn-qty:hover {
+                background-color: #CBD5E1;
+            }
+
+            .qty-val {
+                min-width: 26px;
+                text-align: center;
+                font-weight: 800;
+                font-size: 13px;
+                color: var(--text-dark);
+            }
+
+            .btn-delete {
+                background: none;
+                border: none;
+                color: var(--danger-color);
+                font-size: 16px;
+                font-weight: bold;
+                cursor: pointer;
+                padding: 4px 6px;
+                border-radius: 4px;
+                transition: background 0.15s;
+            }
+
+            .btn-delete:hover {
+                background-color: #FDEDEC;
+            }
+
+            .cart-totals { border-top: 2px solid #E2E8F0; padding-top: 15px; }
+            .total-row { display: flex; justify-content: space-between; font-size: 24px; font-weight: bold; margin-bottom: 20px; color: #2C3E50; }
+
+            .checkout-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+            .btn-action { padding: 15px; border: none; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; text-align: center; transition: background-color 0.2s ease; }
+            .btn-submit { background-color: var(--primary-color); color: var(--white); }
+            .btn-submit:hover { background-color: #0e5606; }
+            .btn-alert { background-color: var(--secondary-color); color: var(--white); }
+            .btn-alert:hover { background-color: #8c3f00; }
+
+            /* ============================================
+               🗺️ 3. PANTALLA: PANEL DE CONTROL DE MESAS
+               ============================================ */
+            .mesas-layout { display: flex; flex-direction: column; width: 100%; gap: 20px; }
+
+            .legend-bar { 
+                display: flex; 
+                gap: 20px; 
+                background-color: rgba(255, 255, 255, 0.92) !important;
+                padding: 15px; 
+                border-radius: 8px; 
+                box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+                border: 1px solid #E2E8F0;
+            }
+            .legend-item { display: flex; align-items: center; gap: 8px; font-weight: 500; color: var(--text-dark); }
+            .box-color { width: 20px; height: 20px; border-radius: 4px; }
+
+            .grid-mesas { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 25px; }
+
+            .mesa-card {
+                background-color: #FFFFFF !important; 
+                border-radius: 12px;
+                padding: 30px;
+                text-align: center;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.08) !important;
+                border-bottom: 8px solid var(--success-color) !important;
+                cursor: pointer;
+                transition: transform 0.2s ease;
+            }
+            .mesa-card:hover { transform: translateY(-3px); }
+            .mesa-card.ocupada { border-bottom-color: var(--secondary-color) !important; }
+            .mesa-card h3 { font-size: 26px; margin-bottom: 10px; color: var(--text-dark); }
+
+            /* ===============================================
+               🍳 4. PANTALLA: MONITOR KDS (COCINA Y BARRA)
+               ===============================================*/
+            .kds-container { 
+                display: flex !important; 
+                justify-content: center !important; 
+                align-items: flex-start !important;
+                width: 100% !important; 
+                gap: 30px !important; 
+                padding: 20px !important;
+                box-sizing: border-box !important;
+                flex-wrap: wrap !important; 
+            }
+
+            .kds-column { 
+                background-color: rgba(255, 255, 255, 0.4) !important; 
+                border-radius: 12px !important; 
+                padding: 20px !important; 
+                display: flex !important; 
+                flex-direction: column !important; 
+                gap: 15px !important; 
+
+                flex: 5 !important;
+                width: 100% !important;
+                max-width: 90% !important; 
+                min-height: 770px !important; 
+
+                backdrop-filter: blur(5px);
+                border: 1px solid rgba(255, 255, 255, 0.3) !important;
+                box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1) !important;
+                box-sizing: border-box !important;
+            }
+
+            .kds-column-title { 
+                font-size: 20px !important; 
+                font-weight: bold !important; 
+                color: #FFFFFF !important; 
+                padding: 14px !important; 
+                border-radius: 38px !important; 
+                text-align: center !important; 
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15) !important; 
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+
+            .bg-cocina { background-color: #2980B9; }
+            .bg-barra { background-color: #8E44AD; }
+
+            .kds-ticket { 
+                background-color: #FFFFFF !important; 
+                border-radius: 6px; 
+                padding: 15px; 
+                border-left: 6px solid var(--secondary-color) !important; 
+                box-shadow: 0 4px 10px rgba(0,0,0,0.08) !important;
+                color: var(--text-dark);
+            }
+            .ticket-header { 
+                display: flex; 
+                justify-content: space-between; 
+                font-weight: bold; 
+                border-bottom: 1px dashed #E2E8F0; 
+                padding-bottom: 8px; 
+                margin-bottom: 10px; 
+            }
+
+            .ticket-obs { 
+                margin-top: 10px; 
+                background-color: #FFF9E6; 
+                border: 1px solid #FFE0B2; 
+                padding: 8px; 
+                font-size: 14px; 
+                border-radius: 4px; 
+                color: #D35400; }
+
+            /* ===================================================
+               🚨 5. MODAL DE ALERTA CENTRADO CON FECHA Y HORA
+               =================================================== */
+
+            .modal-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100vw;
+                height: 100vh;
+                background: rgba(0, 0, 0, 0.65);
+                backdrop-filter: blur(5px);
+                display: none;
+                justify-content: center;
+                align-items: center;
+                z-index: 99999;
+            }
+
+            .modal-box {
+                background: #FFFFFF;
+                padding: 25px 30px;
+                border-radius: 16px;
+                max-width: 420px;
+                width: 90%;
+                text-align: center;
+                box-shadow: 0 12px 35px rgba(0,0,0,0.3);
+                animation: modalPop 0.2s ease-out;
+                color: var(--text-dark);
+            }
+
+            @keyframes modalPop {
+                from { transform: scale(0.85); opacity: 0; }
+                to { transform: scale(1); opacity: 1; }
+            }
+
+            /* ========================================================
+               📱 6. REGLAS RESPONSIVAS (MEDIA QUERIES)
+               ======================================================== */
+            @media (max-width: 1200px) {
+                .ventas-container { 
+                grid-template-columns: 1fr !important; 
+                display: flex !important; 
+                flex-direction: column-reverse !important; 
+                gap: 30px !important; 
+            }
+                .cart-section { 
+                min-height: auto !important; 
+                height: auto !important; 
+                margin-bottom: 25px !important; 
+                border-radius: 24px !important; /* Suaviza las esquinas en móvil */
+            }
+        }
+
+            @media (max-width: 992px) {
+                .ventas-container { grid-template-columns: 1fr; display: flex; flex-direction: column-reverse; }
+                .cart-section { min-height: auto; margin-bottom: 20px; }
+
+                .navbar-simulador { 
+                    flex-direction: column !important; 
+                    gap: 12px !important; 
+                    text-align: center !important;
+                    padding: 15px 15px !important;
+                }
+
+                .navbar-simulador .brand {
+                    margin: 0 auto !important;
+                    font-size: 22px !important;
+                }
+
+                .brand-link {
+                    margin-right: 0 !important;
+                    justify-content: center !important;
+                }
+                
+                /* --- BOTONES DE NAVEGACIÓN EN BLOQUE ADAPTATIVO --- */
+                .nav-tabs { 
+                    width: 100% !important; 
+                    justify-content: center !important; 
+                    flex-direction: column !important; 
+                    gap: 8px !important; 
+                }
+            
+                .tab-btn { 
+                    width: 100% !important; 
+                    text-align: center !important; 
+                    padding: 12px 15px !important; 
+                    font-size: 14px !important; 
+                }
+
+                .kds-container { 
+                    flex-direction: column !important; 
+                    align-items: center !important;
+                    gap: 20px !important;
+                }
+
+                .kds-column { 
+                    max-width: 90% !important; 
+                    min-height: 200px !important;
+                }
+
+                /* --- BOTÓN CERRAR SESIÓN --- */
+                .btn-logout-top {
+                    width: 100% !important;
+                    margin: 5px auto 0 auto !important;
+                    text-align: center !important;
+                    padding: 12px 15px !important;
+                }
+
+            }
+
+            .categories-bar { overflow-x: auto; white-space: nowrap; padding-bottom: 5px; -webkit-overflow-scrolling: touch; }
+            .category-pill { flex-shrink: 0; }
+    </style>
+
+</head>
+<body>
+
+    <!-- CANVAS PRINCIPAL DEL SISTEMA -->
+    <div class="navbar-simulador">
+
+        <!-- BOTÓN DE REFRESCO EN EL LOGO -->
+        <a onclick="window.location.reload();" class="brand-link" style="text-decoration: none; display: inline-flex; align-items: center; margin-right: 5px;">
+            <img src="img/logo_safari.png" class="navbar-logo-safari" alt="Logo Parque Safari" style="cursor: pointer;">
+        </a>
+
+        <!-- TÍTULO FIJO -->
+        <div class="brand" style="display: inline-block; vertical-align: middle;">
+            PARQUE <span> SAFARI</span>
+        </div>
+
+        <!-- BOTONES DE NAVEGACIÓN SUPERIOR (VINCULADOS A SWITCHVIEW) -->
+        <div class="nav-tabs">
+            <button class="tab-btn active" id="btn-ventas" onclick="
+                document.querySelectorAll('.view-content').forEach(v => v.style.display = 'none');
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                document.getElementById('ventas').style.display = 'block';
+                this.classList.add('active');
+            ">💸 Registro de Ventas</button>
+
+            <button class="tab-btn" id="btn-mesas" onclick="
+                document.querySelectorAll('.view-content').forEach(v => v.style.display = 'none');
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                document.getElementById('mesas').style.display = 'block';
+                this.classList.add('active');
+            ">🍽️ Estado de las Mesas</button>
+
+            <!-- 🍔 AQUÍ QUEDA EL BOTÓN REFORMADO CON LA FUNCIÓN EXTERNA -->
+            <button class="tab-btn" id="btn-kds" onclick="cambiarAPantallaKDS()">🍔 Pantallas de Preparación</button>
+        </div> 
+        
+        <button class="btn-logout-top" onclick="sessionStorage.clear(); localStorage.clear(); window.location.href = 'index.html' ;" style="border: none;">
+            CERRAR SESIÓN 🔐
+        </button>
+    </div>
+
+    <!-- ========================================================
+         CONTENIDO DINÁMICO DE PANTALLAS
+       ======================================================== -->
+
+    <!-- PANTALLA 1: REGISTRO DE VENTAS -->
+    <div id="ventas" class="view-content active">
+        <div class="ventas-container">
+            <div class="catalog-section">
+                <div class="categories-bar">
+                    <button class="category-pill active" onclick="filtrarProductosPorCategoria('Comida Rápida', this)">🍔 Comida Rápida 🍔</button>
+                    <button class="category-pill" onclick="filtrarProductosPorCategoria('Heladería', this)">🍨 Heladería 🍨</button>
+                    <button class="category-pill" onclick="filtrarProductosPorCategoria('Souvenirs', this)">🧸 Souvenirs 🧸</button>
+                </div>
+                <div class="grid-products">
+                    
+                    <!-- 🍔 SECCIÓN: COMIDA RÁPIDA -->
+                    <div class="product-card" data-categoria="comidarapida" onclick="addItem('Hamburguesa Safari + Papas', 6500, 'comidarapida')">
+                        <h4>Hamburguesa Safari + Papas</h4>
+                        <div class="price">$6.500</div>
+                    </div>
+                
+                    <div class="product-card" data-categoria="comidarapida" onclick="addItem('Completo Italiano XL + Papas', 3800, 'comidarapida')">
+                        <h4>Completo Italiano XL + Papas</h4>
+                        <div class="price">$3.800</div>
+                    </div>
+                
+                    <div class="product-card" data-categoria="comidarapida" onclick="addItem('Papas Fritas Balde Familiar', 5000, 'comidarapida')">
+                        <h4>Papas Fritas Balde Familiar</h4>
+                        <div class="price">$5.000</div>
+                    </div>
+                
+                    <div class="product-card" data-categoria="comidarapida" onclick="addItem('Nuggets de Pollo Safari x10', 4200, 'comidarapida')">
+                        <h4>Nuggets de Pollo Safari x10</h4>
+                        <div class="price">$4.200</div>
+                    </div>
+                
+                    <div class="product-card" data-categoria="comidarapida" onclick="addItem('Sándwich Mechada XL', 7200, 'comidarapida')">
+                        <h4>Sándwich Mechada XL</h4>
+                        <div class="price">$7.200</div>
+                    </div>
+                    
+                    <!-- 🍨 SECCIÓN: HELADERÍA -->
+                    <div class="product-card" data-categoria="heladeria" onclick="addItem('Helado Artesanal Copa Safari', 3500, 'heladeria')">
+                        <h4>Helado Artesanal Copa Safari</h4>
+                        <p class="price">$3.500</p>
+                    </div>
+
+                    <div class="product-card" data-categoria="heladeria" onclick="addItem('Barquillo Simple Safari', 1800, 'heladeria')">
+                        <h4>Barquillo Simple Safari</h4>
+                        <p class="price">$1.800</p>
+                    </div>
+
+                    <div class="product-card" data-categoria="heladeria" onclick="addItem('Barquillo Doble Rugido', 2800, 'heladeria')">
+                        <h4>Barquillo Doble Rugido</h4>
+                        <p class="price">$2.800</p>
+                    </div>
+
+                    <div class="product-card" data-categoria="heladeria" onclick="addItem('Paleta Frutal De León', 1500, 'heladeria')">
+                        <h4>Paleta Frutal De León</h4>
+                        <p class="price">$1.500</p>
+                    </div>
+
+                    <!-- 🧸 SECCIÓN: SOUVENIRS -->
+                    <div class="product-card" data-categoria="souvenirs" onclick="addItem('Llavero Peluche León Safari', 4500, 'souvenirs')">
+                        <h4>Llavero Peluche León Safari</h4>
+                        <p class="price">$4.500</p>
+                    </div>
+
+                    <div class="product-card" data-categoria="souvenirs" onclick="addItem('Gorra Bordada Parque Safari', 7500, 'souvenirs')">
+                        <h4>Gorra Bordada Parque Safari</h4>
+                        <p class="price">$7.500</p>
+                    </div>
+
+                    <div class="product-card" data-categoria="souvenirs" onclick="addItem('Polera Oficial Huella Tigre', 12000, 'souvenirs')">
+                        <h4>Polera Oficial Huella Tigre</h4>
+                        <p class="price">$12.000</p>
+                    </div>
+
+                    <div class="product-card" data-categoria="souvenirs" onclick="addItem('Tazón Cerámica Cachorro León', 5500, 'souvenirs')">
+                        <h4>Tazón Cerámica Cachorro León</h4>
+                        <p class="price">$5.500</p>
+                    </div>
+
+                </div> 
+            </div> 
+            
+            <!-- SECCIÓN LATERAL: DETALLE DEL PEDIDO -->
+            <div class="cart-section">
+                <div>
+                    <h3 class="cart-title">Detalle del Pedido</h3>
+                    
+                    <!-- SELECTOR DE MESAS -->
+                    <div style="margin: 15px 0; display: flex; flex-direction: column; gap: 5px;">
+                        <label style="font-weight: bold; text-align: center; font-size: 18px; color: #C0392B;">* Seleccionar Mesa Obligatoria *</label>
+                        <select id="cart-mesa-select" class="form-control" style="margin-top: 5px; margin-bottom: 15px; padding: 8px; font-weight: bold;">
+                            <option value="">-- Seleccione una Mesa para la Entrega --</option>
+                            <option value="1">Mesa 01 (Disponible)</option>
+                            <option value="2">Mesa 02 (Disponible)</option>
+                            <option value="3">Mesa 03 (Disponible)</option>
+                            <option value="4">Mesa 04 (Disponible)</option>
+                            <option value="5">Mesa 05 (Disponible)</option>
+                            <option value="6">Mesa 06 (Disponible)</option>
+                            <option value="7">Mesa 07 (Disponible)</option>
+                            <option value="8">Mesa 08 (Disponible)</option>
+                            <option value="9">Mesa 09 (Disponible)</option>
+                            <option value="10">Mesa 10 (Disponible)</option>
+                            <option value="11">Mesa 11 (Disponible)</option>
+                            <option value="12">Mesa 12 (Disponible)</option>
+                            <option value="13">Mesa 13 (Disponible)</option>
+                            <option value="14">Mesa 14 (Disponible)</option>
+                            <option value="15">Mesa 15 (Disponible)</option>
+                            <option value="16">Mesa 16 (Disponible)</option>
+                            <option value="17">Mesa 17 (Disponible)</option>
+                            <option value="18">Mesa 18 (Disponible)</option>
+                            <option value="19">Mesa 19 (Disponible)</option>
+                            <option value="20">Mesa 20 (Disponible)</option>
+                            <option value="21">Mesa 21 (Disponible)</option>
+                            <option value="22">Mesa 22 (Disponible)</option>
+                            <option value="23">Mesa 23 (Disponible)</option>
+                            <option value="24">Mesa 24 (Disponible)</option>
+                        </select>
+                    </div>
+
+                    <!-- OBSERVACIONES -->
+                    <div style="margin-bottom: 15px;">
+                        <label for="cart-observaciones" style="display:block; font-size:12px; font-weight:bold; color:var(--primary-color); margin-bottom:4px;">📝 NOTAS / OBSERVACIONES ESPECÍFICAS:</label>
+                        <input type="text" id="cart-observaciones" class="form-control" style="width:100%; padding:10px; border-radius:6px;" placeholder="ej: Sin cebolla / Extra aderezo...">
+                    </div>
+                
+                    <!-- CONTENEDOR DE FILAS DEL CARRITO -->
+                    <div class="cart-items" id="cart-items-container">
+                        <div id="cart-dynamic-list"></div>
+                        <p id="cart-empty-msg" style="color: #252525; text-align: center; margin-top: 30px;">Seleccione productos del catálogo</p>
+                    </div>
+                </div>
+
+                <div class="cart-totals">
+                    <div class="total-row">
+                        <span>Total:</span>
+                        <span id="cart-total-value">$0</span>
+                    </div>
+                    <div class="checkout-actions">
+                        <button class="btn-action btn-alert" onclick="clearCart()">Vaciar 🚯</button>
+                        <button class="btn-action btn-submit" onclick="procesarVentaWebSocket(event)">Comprobante 📋</button>
+                    </div>
+                </div>
+            </div> 
+        </div> 
+    </div>
+
+    <!-- PANTALLA 2: MONITOR DE MESAS -->
+    <div id="mesas" class="view-content">
+        <div class="mesas-layout">
+            <div class="legend-bar">
+                <div class="legend-item">
+                    <div class="box-color" style="background-color: var(--success-color);"></div>
+                    <span>Disponible</span>
+                </div>
+                <div class="legend-item">
+                    <div class="box-color" style="background-color: var(--secondary-color);"></div>
+                    <span>Ocupada (En Consumo)</span>
+                </div>
+            </div>
+
+            <!--Estado de las Mesas -->
+            
+            <div class="grid-mesas">
+                <div class="mesa-card" id="mesa-box-1"><h3>Mesa 01</h3><p id="status-text-1">Estado: Disponible</p></div>
+                <div class="mesa-card" id="mesa-box-2"><h3>Mesa 02</h3><p id="status-text-2">Estado: Disponible</p></div>
+                <div class="mesa-card" id="mesa-box-3"><h3>Mesa 03</h3><p id="status-text-3">Estado: Disponible</p></div>
+                <div class="mesa-card" id="mesa-box-4"><h3>Mesa 04</h3><p id="status-text-4">Estado: Disponible</p></div>
+                <div class="mesa-card" id="mesa-box-5"><h3>Mesa 05</h3><p id="status-text-5">Estado: Disponible</p></div>
+                <div class="mesa-card" id="mesa-box-6"><h3>Mesa 06</h3><p id="status-text-6">Estado: Disponible</p></div>
+                <div class="mesa-card" id="mesa-box-7"><h3>Mesa 07</h3><p id="status-text-7">Estado: Disponible</p></div>
+                <div class="mesa-card" id="mesa-box-8"><h3>Mesa 08</h3><p id="status-text-8">Estado: Disponible</p></div>
+                <div class="mesa-card" id="mesa-box-9"><h3>Mesa 09</h3><p id="status-text-9">Estado: Disponible</p></div>
+                <div class="mesa-card" id="mesa-box-10"><h3>Mesa 10</h3><p id="status-text-10">Estado: Disponible</p></div>
+                <div class="mesa-card" id="mesa-box-11"><h3>Mesa 11</h3><p id="status-text-11">Estado: Disponible</p></div>
+                <div class="mesa-card" id="mesa-box-12"><h3>Mesa 12</h3><p id="status-text-12">Estado: Disponible</p></div>
+                <div class="mesa-card" id="mesa-box-13"><h3>Mesa 13</h3><p id="status-text-13">Estado: Disponible</p></div>
+                <div class="mesa-card" id="mesa-box-14"><h3>Mesa 14</h3><p id="status-text-14">Estado: Disponible</p></div>
+                <div class="mesa-card" id="mesa-box-15"><h3>Mesa 15</h3><p id="status-text-15">Estado: Disponible</p></div>
+                <div class="mesa-card" id="mesa-box-16"><h3>Mesa 16</h3><p id="status-text-16">Estado: Disponible</p></div>
+                <div class="mesa-card" id="mesa-box-17"><h3>Mesa 17</h3><p id="status-text-17">Estado: Disponible</p></div>
+                <div class="mesa-card" id="mesa-box-18"><h3>Mesa 18</h3><p id="status-text-18">Estado: Disponible</p></div>
+                <div class="mesa-card" id="mesa-box-19"><h3>Mesa 19</h3><p id="status-text-19">Estado: Disponible</p></div>
+                <div class="mesa-card" id="mesa-box-20"><h3>Mesa 20</h3><p id="status-text-20">Estado: Disponible</p></div>
+                <div class="mesa-card" id="mesa-box-21"><h3>Mesa 21</h3><p id="status-text-21">Estado: Disponible</p></div>
+                <div class="mesa-card" id="mesa-box-22"><h3>Mesa 22</h3><p id="status-text-22">Estado: Disponible</p></div>
+                <div class="mesa-card" id="mesa-box-23"><h3>Mesa 23</h3><p id="status-text-23">Estado: Disponible</p></div>
+                <div class="mesa-card" id="mesa-box-24"><h3>Mesa 24</h3><p id="status-text-24">Estado: Disponible</p></div>
+            </div> 
+        </div> 
+    </div> <!-- Cierra #mesas -->
+
+        <!-- PANTALLA 3: PANTALLAS DE PREPARACIÓN (KDS) -->
+        <div id="kds" class="view-content">
+            <div class="kds-container"> 
+                <div class="kds-column">
+                    <div class="kds-column-title bg-cocina">🍔 MONITOR DE COCINA</div>
+                    <div id="container-cocina">
+                        <p id="no-cocina-msg" style="text-align:center; color:#1d2829; padding:20px; font-weight: bold;">No hay comandas pendientes en Cocina.</p>
+                    </div>
+                </div>
+
+                <div class="kds-column">
+                    <div class="kds-column-title bg-barra">🍨 MONITOR DE BARRA</div>
+                    <div id="container-barra">
+                        <p id="no-barra-msg" style="text-align:center; color:#1d2829; padding:20px; font-weight: bold;">No hay pedidos pendientes en Barra.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODAL DE ALERTA CENTRADO -->
+        <div id="custom-modal-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.55); z-index: 99999; align-items: center; justify-content: center;">
+            <div style="background: #ffffff; padding: 25px 30px; border-radius: 12px; text-align: center; max-width: 400px; width: 90%; box-shadow: 0 10px 25px rgba(0,0,0,0.3); font-family: sans-serif;">
+
+                <div id="modal-icono" style="font-size: 36px; margin-bottom: 8px;">✅</div>
+                <h3 id="modal-titulo" style="margin: 0 0 10px 0; color: #2C3E50; font-size: 20px; font-weight: bold;">¡Venta Procesada!</h3>
+
+                <p id="modal-mensaje-texto" style="font-size: 15px; color: #34495E; margin: 10px 0; font-weight: 600;"></p>
+                <p id="modal-fechahora-texto" style="font-size: 13px; color: #7F8C8D; margin-top: 15px; margin-bottom: 20px; border-top: 1px dashed #E2E8F0; padding-top: 10px;"></p>
+                <button onclick="cerrarAlertaModal()" style="background-color: #27AE60; color: white; border: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 14px; width: 100%;">Aceptar</button>
+            </div>
+        </div>
+
+    <!-- CONTROLADORES JAVASCRIPT COORDINADOS -->
+    <script>
+        
+        // ========================================================
+        // 💸 1. VARIABLES GLOBALES DEL SISTEMA
+        // ========================================================
+        var cart = [];
+        var contadorTicketsDemo = 1;
+        var mesasOcupadas = []; // Almacena los números de mesa bajo consumo activo
+
+        // ========================================================
+        // 🍔 PASO 2: AQUÍ COLOCAS LA FUNCIÓN INTEGRADORA PARA EL COCINERO
+        // ========================================================
+        function cambiarAPantallaKDS() {
+            // 1. Limpieza estándar de pantallas y botones
+            document.querySelectorAll('.view-content').forEach(v => v.style.display = 'none');
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+
+            const panelKDS = document.getElementById('kds');
+            const btnKDS = document.getElementById('btn-kds');
+            if (panelKDS) panelKDS.style.display = 'block';
+            if (btnKDS) btnKDS.classList.add('active');
+
+            const rolUsuario = sessionStorage.getItem('usuario_rol'); 
+
+            const contenedorCocina = document.getElementById('container-cocina');
+            const contenedorBarra = document.getElementById('container-barra');
+            const columnaCocina = contenedorCocina ? contenedorCocina.closest('.kds-column') : null;
+            const columnaBarra = contenedorBarra ? contenedorBarra.closest('.kds-column') : null;
+
+            // Buscamos el botón de mesas para poder alterar el orden visual
+            const btnMesas = document.getElementById('btn-mesas');
+
+            if (rolUsuario === 'Cocinero' || rolUsuario === 'Cocina') {
+                if (columnaBarra) columnaBarra.style.setProperty('display', 'none', 'important');
+                if (columnaCocina) {
+                    columnaCocina.style.setProperty('max-width', '80%', 'important');
+                    columnaCocina.style.setProperty('min-height', 'auto', 'important'); 
+                }
+            
+                const btnVentas = document.getElementById('btn-ventas');
+                if (btnVentas) btnVentas.style.display = 'none';
+            
+                // ========================================================
+                // 🔥 INVERSIÓN DE ORDEN EXCLUSIVA PARA EL COCINERO:
+                // Forzamos al botón de KDS a ponerse primero en la grilla Flexbox
+                // ========================================================
+                if (btnKDS) btnKDS.style.setProperty('order', '1', 'important');
+                if (btnMesas) btnMesas.style.setProperty('order', '2', 'important');
+            
+            } else {
+                if (columnaBarra) columnaBarra.style.setProperty('display', 'flex', 'important');
+                if (columnaCocina) {
+                    columnaCocina.style.setProperty('display', 'flex', 'important');
+                    columnaCocina.style.setProperty('max-width', '90%', 'important'); 
+                }
+            
+                const btnVentas = document.getElementById('btn-ventas');
+                if (btnVentas) btnVentas.style.display = 'block';
+            
+                // ========================================================
+                // 🔄 RESTAURACIÓN PARA OTROS ROLES (ADMIN / CAJERO):
+                // Devolvemos los botones al orden secuencial nativo del HTML
+                // ========================================================
+                if (btnKDS) btnKDS.style.setProperty('order', '0', 'important');
+                if (btnMesas) btnMesas.style.setProperty('order', '0', 'important');
+            }
+        }
+        
+        // ========================================================
+        // 💸 2. INICIALIZACIÓN AL CARGAR LA PÁGINA (CON SIMULACIÓN DE COMANDAS)
+        // ========================================================
+        window.onload = function() {
+            const rolUsuario = sessionStorage.getItem('usuario_rol');
+        
+            if (rolUsuario === 'Cocinero' || rolUsuario === 'Cocina') {
+                if (typeof cambiarAPantallaKDS === 'function') {
+                    cambiarAPantallaKDS();
+                }
+
+                const btnVentas = document.getElementById('btn-ventas');
+                if (btnVentas) btnVentas.style.display = 'none';
+            
+                // 🔥 PROCESO DE SIMULACIÓN EN CALIENTE PARA EL COCINERO
+                inyectarComandasDemostracion();
+            } 
+            else {
+                var pantallaVentas = document.getElementById('ventas');
+                if (pantallaVentas) {
+                    pantallaVentas.style.display = 'block';
+                }
+
+                var btnInicial = document.querySelector('.category-pill.active');
+                if (btnInicial) {
+                    filtrarProductosPorCategoria('Comida Rápida', btnInicial);
+                }
+            
+                const btnVentas = document.getElementById('btn-ventas');
+                if (btnVentas) btnVentas.style.display = 'block';
+            }
+        
+            updateCartUI();
+        };
+
+        // ========================================================
+        // 💸 3. FILTRADO DE PRODUCTOS EN EL CATÁLOGO
+        // ========================================================
+        function filtrarProductosPorCategoria(categoria, elementoBoton) {
+            var productos = document.querySelectorAll('.product-card');
+            
+            if (elementoBoton) {
+                document.querySelectorAll('.category-pill').forEach(btn => btn.classList.remove('active'));
+                elementoBoton.classList.add('active');
+            }
+        
+            var catBuscada = categoria.toLowerCase().replace(/\s+/g, '').normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+        
+            productos.forEach(function(producto) {
+                var catProducto = producto.getAttribute('data-categoria');
+                
+                if (catBuscada === 'todos' || catProducto === catBuscada) {
+                    producto.style.display = '';
+                } else {
+                    producto.style.display = 'none';
+                }
+            });
+        }
+        
+        // ========================================================
+        // 💸 4. GESTIÓN DEL CARRITO (CON MODIFICACIÓN DE PRECIO / CONVENIOS)
+        // ========================================================
+        function addItem(name, price, categoria) {
+            var existingIndex = cart.findIndex(item => item.name === name);
+            
+            if (existingIndex > -1) {
+                cart[existingIndex].cantidad += 1;
+            } else {
+                cart.push({
+                    name: name,
+                    price: price, // Precio base inicial
+                    categoria: categoria || 'comidarapida',
+                    cantidad: 1
+                });
+            }
+            updateCartUI();
+        }
+
+        // 🛠️ REQUERIMIENTO EXTRAÍDO DEL DIAGRAMA: Permite sobreescribir el precio unitario por convenios
+        function modificarPrecioManual(index, nuevoPrecio) {
+            var precioNum = parseFloat(nuevoPrecio);
+            if (!isNaN(precioNum) && precioNum >= 0 && cart[index]) {
+                cart[index].price = precioNum;
+                updateCartUI(); // Recalcula el subtotal y total general al instante
+            }
+        }
+        
+        function cambiarCantidad(index, cambio) {
+            if (cart[index]) {
+                cart[index].cantidad += cambio;
+                if (cart[index].cantidad <= 0) {
+                    cart.splice(index, 1);
+                }
+                updateCartUI();
+            }
+        }
+        
+        function removeItem(index) {
+            cart.splice(index, 1);
+            updateCartUI();
+        }
+        
+        function clearCart() {
+            cart = [];
+            updateCartUI();
+        }
+        
+        // INTERFAZ EDITABLE DEL CARRITO
+        function updateCartUI() {
+            var cartDynamicList = document.getElementById('cart-dynamic-list'); 
+            var totalElement = document.getElementById('cart-total-value');
+            var emptyMsg = document.getElementById('cart-empty-msg');
+            
+            if (!cartDynamicList) return;
+            cartDynamicList.innerHTML = '';
+            
+            var total = 0;
+            
+            if (cart.length === 0) {
+                if (emptyMsg) emptyMsg.style.display = 'block';
+            } else {
+                if (emptyMsg) emptyMsg.style.display = 'none';
+            }
+            
+            cart.forEach(function(item, index) {
+                var subtotal = item.price * item.cantidad;
+                total += subtotal;
+                
+                var itemDiv = document.createElement('div');
+                itemDiv.className = 'cart-item';
+                itemDiv.style = "display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; padding:8px; background:#f9f9f9; border-radius:6px; gap:8px;";
+                
+                // 🛠️ SE AGREGA UN INPUT EN LUGAR DE TEXTO FIJO PARA MODIFICAR EL PRECIO MANUALMENTE (CONVENIOS)
+                itemDiv.innerHTML = `
+                    <div class="cart-item-details" style="display:flex; flex-direction:column; flex-grow:1; gap:4px;">
+                        <span class="cart-item-name" style="font-weight:600; color:#2C3E50; font-size:13px;">${item.name}</span>
+                        <div style="display:flex; align-items:center; gap:4px;">
+                            <span style="font-size:11px; color:#7f8c8d; font-weight:bold;">Unitario: $</span>
+                            <input type="number" value="${item.price}" onchange="modificarPrecioManual(${index}, this.value)" style="width:70px; padding:2px 4px; border:1px solid #bdc3c7; border-radius:4px; font-size:12px; font-weight:bold; color:#27AE60;" min="0" title="Modificar precio por convenio">
+                        </div>
+                        <span class="cart-item-subtotal" style="color:#27AE60; font-weight:bold; font-size:13px; margin-top:2px;">Subtotal: $${subtotal.toLocaleString('es-CL')}</span>
+                    </div>
+                    <div class="cart-item-controls" style="display:flex; align-items:center; gap:6px;">
+                        <div class="qty-stepper" style="display:inline-flex; align-items:center; background:#e0e0e0; border-radius:4px; padding:2px 5px;">
+                            <button type="button" class="btn-qty" onclick="cambiarCantidad(${index}, -1)" style="border:none; background:none; cursor:pointer; font-weight:bold; padding:0 5px;">-</button>
+                            <span class="qty-val" style="margin:0 6px; font-weight:bold; font-size:13px;">${item.cantidad}</span>
+                            <button type="button" class="btn-qty" onclick="cambiarCantidad(${index}, 1)" style="border:none; background:none; cursor:pointer; font-weight:bold; padding:0 5px;">+</button>
+                        </div>
+                        <button type="button" class="btn-delete" onclick="removeItem(${index})" style="border:none; background:#E74C3C; color:white; border-radius:4px; padding:4px 8px; cursor:pointer;">✕</button>
+                    </div>
+                `;
+                cartDynamicList.appendChild(itemDiv);
+            });
+            
+            if (totalElement) {
+                totalElement.innerText = '\$' + total.toLocaleString('es-CL');
+            }
+        }
+        
+        // ========================================================
+        // 💸 5. PROCESADO DE VENTA (CON NOTAS, HORA Y PRECIOS DE CONVENIO)
+        // ========================================================
+        function procesarVentaWebSocket(event) {
+            if (event) event.preventDefault();
+        
+            // 1. Validación de carrito vacío
+            if (cart.length === 0) {
+                mostrarAlertaModal("⚠️ El carrito está vacío. Añada productos antes de procesar.", "alerta");
+                return;
+            }
+        
+            // 2. Validación de mesa obligatoria
+            var mesaSelect = document.getElementById('cart-mesa-select');
+            var mesaTexto = mesaSelect && mesaSelect.selectedIndex > 0 ? mesaSelect.options[mesaSelect.selectedIndex].text : '';
+            var mesaId = mesaSelect ? mesaSelect.value : '';
+            
+            if (!mesaTexto) {
+                mostrarAlertaModal("⚠️ Debe seleccionar una mesa obligatoriamente.", "alerta");
+                return;
+            }
+
+            // 3. Validación de mesa ya ocupada
+            if (mesasOcupadas.includes(mesaId)) {
+                mostrarAlertaModal(`⚠️ La Mesa ${mesaId.padStart(2, '0')} ya está ocupada con un consumo activo. Libérela antes de asignarle un nuevo pedido.`, "alerta");
+                return;
+            }
+            
+            // Registramos la mesa como ocupada de forma temporal
+            if (mesaId) {
+                mesasOcupadas.push(mesaId);
+            }
+        
+            var tieneCocina = false;
+            var tieneBarra = false;
+            var itemsCocinaHTML = '';
+            var itemsBarraHTML = '';
+        
+            // 4. Ruteo inteligente por categorías (Incluye el precio cobrado real)
+            cart.forEach(function(item) {
+                var cat = (item.categoria || '').toLowerCase().replace(/\s+/g, '').normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                var subtotalItem = item.price * item.cantidad;
+                
+                // Formateamos el texto para que el operario de KDS vea si el precio cambió por convenio
+                var detalleProductoHTML = `🔹 ${item.cantidad}x ${item.name} <span style="color:#7f8c8d; font-size:11px;">($${subtotalItem.toLocaleString('es-CL')})</span>`;
+                
+                if (cat === 'heladeria' || cat === 'souvenirs') {
+                    tieneBarra = true;
+                    itemsBarraHTML += `<li style="padding:4px 0; border-bottom:1px dashed #eee; list-style:none;">${detalleProductoHTML}</li>`;
+                } else {
+                    tieneCocina = true;
+                    itemsCocinaHTML += `<li style="padding:4px 0; border-bottom:1px dashed #eee; list-style:none; color:#d35400; font-weight:500;">${detalleProductoHTML.replace('🔹', '🔸')}</li>`;
+                }
+            });
+        
+            var contenedorCocina = document.getElementById('container-cocina');
+            var contenedorBarra = document.getElementById('container-barra');
+            var baseTicketStyle = "background:#fff; border-left:5px solid #27ae60; padding:12px; margin-bottom:10px; border-radius:6px; box-shadow:0 2px 5px rgba(0,0,0,0.1); text-align:left;";
+        
+            // 🕒 CAPTURA DE HORA: Obtiene la hora actual del pedido (HH:MM)
+            var ahora = new Date();
+            var horaPedidoStr = ahora.toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' });
+
+            // 📝 CAPTURA DE NOTAS: Rescata las observaciones para ambos monitores
+            var notaInput = document.getElementById('cart-observaciones');
+            var notaTexto = notaInput ? notaInput.value.trim() : '';
+            var notesBlockHTML = '';
+
+            if (notaTexto !== '') {
+                notesBlockHTML = `
+                    <div style="margin-top: 10px; padding: 6px 10px; background-color: #ffc0a8; border-left: 3px solid #ff4800; border-radius: 4px; font-size: 13px; color: black; font-weight: bold;">
+                        📝 NOTA: ${notaTexto}
+                    </div>
+                `;
+            }
+        
+            // 🍔 INYECCIÓN EN MONITOR DE COCINA
+            if (tieneCocina && contenedorCocina) {
+                var msgCocina = document.getElementById('no-cocina-msg');
+                if (msgCocina) msgCocina.style.display = 'none';
+        
+                var ticketCocina = document.createElement('div');
+                ticketCocina.style = baseTicketStyle;
+                ticketCocina.innerHTML = `
+                    <div style="display:flex; justify-content:space-between; font-weight:bold; margin-bottom:4px; color:#2c3e50;">
+                        <span>📋 Ticket #${contadorTicketsDemo}</span>
+                        <span class="ticket-mesa-header" data-raw-id="${mesaId}" style="color:#c0392b;">Mesa ${mesaId.padStart(2, '0')}</span>
+                    </div>
+                    <div style="font-size: 12px; color: #7f8c8d; margin-bottom: 6px; font-weight: 600;">🕒 Hora Pedido: ${horaPedidoStr}</div>
+                    <div class="ticket-status-label" style="font-size: 13px; font-weight: bold; color: #f39c12; margin-bottom: 8px;">Estado: Pendiente</div>
+                    
+                    <ul style="padding-left:0; margin:0; margin-bottom: 5px;">${itemsCocinaHTML}</ul>
+                    ${notesBlockHTML}
+                    
+                    <button onclick="gestionarCicloCocina(this)" style="margin-top:10px; width:100%; background:#27ae60; color:white; border:none; padding:8px; border-radius:4px; font-weight:bold; cursor:pointer;">✔ Entregar</button>
+                `;
+                contenedorCocina.appendChild(ticketCocina);
+            }
+        
+            // 🍨 INYECCIÓN EN MONITOR DE BARRA
+            if (tieneBarra && contenedorBarra) {
+                var msgBarra = document.getElementById('no-barra-msg');
+                if (msgBarra) msgBarra.style.display = 'none';
+        
+                var ticketBarra = document.createElement('div');
+                ticketBarra.style = baseTicketStyle;
+                ticketBarra.style.borderLeftColor = "#2980b9";
+                ticketBarra.innerHTML = `
+                    <div style="display:flex; justify-content:space-between; font-weight:bold; margin-bottom:4px; color:#2c3e50;">
+                        <span>📋 Ticket #${contadorTicketsDemo}</span>
+                        <span class="ticket-mesa-header-barra" data-raw-id="${mesaId}" style="color:#2980b9;">Mesa ${mesaId.padStart(2, '0')}</span>
+                    </div>
+                    <div style="font-size: 12px; color: #7f8c8d; margin-bottom: 8px; font-weight: 600;">🕒 Hora Pedido: ${horaPedidoStr}</div>
+                    
+                    <ul style="padding-left:0; margin:0; margin-bottom: 5px;">${itemsBarraHTML}</ul>
+                    ${notesBlockHTML}
+                    
+                    <button onclick="gestionarCicloBarra(this)" style="margin-top:10px; width:100%; background:#2980b9; color:white; border:none; padding:6px; border-radius:4px; font-weight:bold; cursor:pointer;">✔ Despachar Comanda</button>
+                `;
+                contenedorBarra.appendChild(ticketBarra);
+            }
+        
+            // 5. Interacción visual del Monitor de Mesas (Cambia a naranja)
+            var cajaMesaVisual = document.getElementById('mesa-box-' + mesaId);
+            var textoMesaVisual = document.getElementById('status-text-' + mesaId);
+            if (cajaMesaVisual && textoMesaVisual) {
+                cajaMesaVisual.setAttribute('style', 'background-color: #e67e22 !important; color: white !important; border-bottom: 5px solid #d35400 !important;');
+                textoMesaVisual.innerText = 'Estado: Ocupada (En Consumo)';
+                
+                var tituloMesa = cajaMesaVisual.querySelector('h3');
+                if (tituloMesa) {
+                    tituloMesa.setAttribute('style', 'color: white !important;');
+                }
+            }
+
+            // 6. Cambiar el texto en el menú desplegable de ventas
+            if (mesaSelect && mesaId) {
+                var opcionSeleccionada = mesaSelect.querySelector(`option[value="${mesaId}"]`);
+                if (opcionSeleccionada) {
+                    opcionSeleccionada.text = `Mesa ${mesaId.padStart(2, '0')} (Ocupada)`;
+                }
+            }
+        
+            // 7. Lanzamiento de alerta de éxito con auto-cierre incorporado
+            mostrarAlertaModal(`Pedido #${contadorTicketsDemo} procesado exitosamente para la Mesa ${mesaId.padStart(2, '0')}`, "exito");
+            contadorTicketsDemo++;
+        
+            // 8. Reseteo y limpieza de la interfaz para la siguiente comanda
+            cart = [];
+            updateCartUI();
+            if (mesaSelect) mesaSelect.value = '';
+            var notaInputLimpiar = document.getElementById('cart-observaciones');
+            if (notaInputLimpiar) notaInputLimpiar.value = '';
+        }
+        // ========================================================
+        // 💸 6. CONTROL DEL MODAL DE ALERTA DINÁMICO
+        // ========================================================
+        function mostrarAlertaModal(mensaje, tipo = 'exito') {
+            var overlay = document.getElementById('custom-modal-overlay');
+            var txtTitulo = document.getElementById('modal-titulo');
+            var txtIcono = document.getElementById('modal-icono');
+            var txtMensaje = document.getElementById('modal-mensaje-texto');
+            var txtFechaHora = document.getElementById('modal-fechahora-texto');
+            var btnAceptar = overlay ? overlay.querySelector('button') : null;
+        
+            if (overlay && txtMensaje && txtFechaHora) {
+                var ahora = new Date();
+                var fechaStr = ahora.toLocaleDateString('es-CL', { day: '2-digit', month: '2-digit', year: 'numeric' });
+                var horaStr = ahora.toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            
+                if (tipo === 'alerta') {
+                    if (txtIcono) txtIcono.innerText = '⚠️';
+                    if (txtTitulo) txtTitulo.innerText = 'Atención';
+                    if (btnAceptar) btnAceptar.style.display = 'block'; 
+                } else {
+                    if (txtIcono) txtIcono.innerText = '✅';
+                    if (txtTitulo) txtTitulo.innerText = '¡Venta Procesada!';
+                    if (btnAceptar) btnAceptar.style.display = 'none'; 
+                }
+
+                txtMensaje.innerText = mensaje;
+                txtFechaHora.innerHTML = `📅 <strong>Fecha:</strong> ${fechaStr} &nbsp;|&nbsp; ⏰ <strong>Hora:</strong> ${horaStr}`;
+                overlay.style.display = 'flex';
+
+                // 🕒 CIERRE AUTOMÁTICO: A los 2 segundos exactos se oculta el modal de éxito solo
+                if (tipo === 'exito') {
+                    setTimeout(function() {
+                        overlay.style.display = 'none';
+                    }, 1500);
+                }
+            }
+        }
+        
+        function cerrarAlertaModal() {
+            var overlay = document.getElementById('custom-modal-overlay');
+            if (overlay) overlay.style.display = 'none';
+        }
+
+        // ========================================================
+        // 🛠️ 7. FUNCIÓN AUXILIAR: LIBERACIÓN INTELIGENTE DE MESAS
+        // ========================================================
+        function verificarYLiberarMesa(mId) {
+            if (!mId) return;
+
+            var tieneTicketsEnCocina = false;
+            var tieneTicketsEnBarra = false;
+
+            // Escanea si quedan comandas activas de esta mesa en Cocina
+            document.querySelectorAll('.ticket-mesa-header').forEach(function(el) {
+                if (el.getAttribute('data-raw-id') === mId) tieneTicketsEnCocina = true;
+            });
+
+            // Escanea si quedan comandas activas de esta mesa en Barra
+            document.querySelectorAll('.ticket-mesa-header-barra').forEach(function(el) {
+                if (el.getAttribute('data-raw-id') === mId) tieneTicketsEnBarra = true;
+            });
+
+            // 🎯 REGLA DE CONTROL CRUZADO: Solo si la mesa ya no tiene comandas en ningún monitor, vuelve a verde
+            if (!tieneTicketsEnCocina && !tieneTicketsEnBarra) {
+                if (typeof mesasOcupadas !== 'undefined') {
+                    var index = mesasOcupadas.indexOf(mId);
+                    if (index > -1) mesasOcupadas.splice(index, 1);
+                }
+                
+                // RESTAURACIÓN VISUAL: Fondo blanco y borde inferior verde original del catálogo
+                var cajaMesaVisual = document.getElementById('mesa-box-' + mId);
+                var textoMesaVisual = document.getElementById('status-text-' + mId);
+                if (cajaMesaVisual && textoMesaVisual) {
+                    cajaMesaVisual.setAttribute('style', 'background-color: #ffffff !important; color: #2c3e50 !important; border-bottom: 5px solid #27ae60 !important;');
+                    textoMesaVisual.innerText = 'Estado: Disponible';
+                    
+                    var tituloMesa = cajaMesaVisual.querySelector('h3');
+                    if (tituloMesa) {
+                        tituloMesa.setAttribute('style', 'color: #2c3e50 !important; margin: 0 0 5px 0;');
+                    }
+                }
+                
+                // Habilita nuevamente la mesa como (Disponible) en el selector de ventas
+                var mesaSelect = document.getElementById('cart-mesa-select');
+                if (mesaSelect) {
+                    var opcionMesa = mesaSelect.querySelector('option[value="' + mId + '"]');
+                    if (opcionMesa) {
+                        opcionMesa.text = 'Mesa ' + mId.padStart(2, '0') + ' (Disponible)';
+                    }
+                }
+            }
+        }
+
+        // ========================================================
+        // 🍔 8. CONTROL CENTRALIZADO DEL MONITOR DE COCINA
+        // ========================================================
+        function gestionarCicloCocina(botonHtml) {
+            var ticketDiv = botonHtml.closest('div');
+            var labelEstado = ticketDiv.querySelector('.ticket-status-label');
+            
+            // Paso 1: Transiciona de Pendiente a Entregado
+            if (botonHtml.innerText.trim() === '✔ Entregar') {
+                if (labelEstado) {
+                    labelEstado.innerText = 'Estado: Entregado';
+                    labelEstado.style.color = '#27ae60'; 
+                }
+                botonHtml.innerText = '✔ Despachar';
+                botonHtml.style.background = '#e67e22'; 
+            } 
+            // Paso 2: Remueve de pantalla y despliega la alerta de despacho al cliente
+            else {
+                var mesaSpan = ticketDiv.querySelector('.ticket-mesa-header');
+                var mId = mesaSpan ? mesaSpan.getAttribute('data-raw-id') : '';
+                
+                if (mId) {
+                    mostrarAlertaModal(`Pedido de la Mesa ${mId.padStart(2, '0')} ha sido Entregado a Cliente con éxito.`, "exito");
+                } else {
+                    mostrarAlertaModal("Pedido ha sido Entregado a Cliente con éxito.", "exito");
+                }
+
+                ticketDiv.style.transition = 'all 0.3s ease';
+                ticketDiv.style.opacity = '0';
+                ticketDiv.style.transform = 'scale(0.9)';
+                setTimeout(function() {
+                    ticketDiv.remove();
+                    
+                    // Llama a la evaluación de liberación inteligente de mesas
+                    verificarYLiberarMesa(mId);
+
+                    var contenedor = document.getElementById('container-cocina');
+                    if (contenedor && contenedor.querySelectorAll('.ticket-mesa-header').length === 0) {
+                        var msg = document.getElementById('no-cocina-msg');
+                        if (msg) msg.style.display = 'block';
+                    }
+                }, 300);
+            }
+        }
+
+        // ========================================================
+        // 🍨 9. CONTROL CENTRALIZADO DEL MONITOR DE BARRA
+        // ========================================================
+        function gestionarCicloBarra(botonHtml) {
+            var ticketDiv = botonHtml.closest('div');
+            var mesaSpan = ticketDiv.querySelector('.ticket-mesa-header-barra');
+            var mId = mesaSpan ? mesaSpan.getAttribute('data-raw-id') : '';
+            
+            ticketDiv.style.transition = 'all 0.3s ease';
+            ticketDiv.style.opacity = '0';
+            ticketDiv.style.transform = 'scale(0.9)';
+            
+            setTimeout(function() {
+                ticketDiv.remove();
+                
+                // Llama a la evaluación de liberación inteligente de mesas
+                verificarYLiberarMesa(mId);
+
+                var contenedorBarra = document.getElementById('container-barra');
+                if (contenedorBarra && contenedorBarra.querySelectorAll('.ticket-mesa-header-barra').length === 0) {
+                    var msgBarra = document.getElementById('no-barra-msg');
+                    if (msgBarra) msgBarra.style.display = 'block';
+                }
+            }, 300);
+        }
+
+
+        // ========================================================
+        // 🍔 10. INYECTOR DINÁMICO DE COMANDAS PARA SIMULACIÓN LOCAL (ALTO VOLUMEN)
+        // ========================================================
+        function inyectarComandasDemostracion() {
+            const contenedorCocina = document.getElementById('container-cocina');
+            const msgCocina = document.getElementById('no-cocina-msg');
+            if (!contenedorCocina) return;
+        
+            // Ocultamos el mensaje de "no hay comandas" de fábrica
+            if (msgCocina) msgCocina.style.display = 'none';
+        
+            // Bloqueamos todas las mesas ficticias involucradas en la simulación
+            if (typeof mesasOcupadas !== 'undefined') {
+                ['04', '12', '07', '19'].forEach(m => {
+                    if (!mesasOcupadas.includes(m)) mesasOcupadas.push(m);
+                });
+            }
+        
+            const baseTicketStyle = "background:#fff; border-left:5px solid #27ae60; padding:12px; margin-bottom:15px; border-radius:6px; box-shadow:0 2px 5px rgba(0,0,0,0.1); text-align:left; font-family:sans-serif;";
+        
+            // 📋 TICKET 01 (Mesa 04)
+            const ticket1 = document.createElement('div');
+            ticket1.style = baseTicketStyle;
+            ticket1.innerHTML = `
+                <div style="display:flex; justify-content:space-between; font-weight:bold; margin-bottom:4px; color:#2c3e50;">
+                    <span>📋 Ticket #1</span>
+                    <span class="ticket-mesa-header" data-raw-id="04" style="color:#c0392b;">Mesa 04</span>
+                </div>
+                <div style="font-size: 12px; color: #7f8c8d; margin-bottom: 6px; font-weight: 600;">🕒 Hora Pedido: 13:15</div>
+                <div class="ticket-status-label" style="font-size: 13px; font-weight: bold; color: #f39c12; margin-bottom: 8px;">Estado: Pendiente</div>
+                <ul style="padding-left:0; margin:0; margin-bottom: 5px;">
+                    <li style="padding:4px 0; border-bottom:1px dashed #eee; list-style:none; color:#d35400; font-weight:500;">🔸 2x Hamburguesa Safari + Papas <span style="color:#7f8c8d; font-size:11px;">($13.000)</span></li>
+                    <li style="padding:4px 0; border-bottom:1px dashed #eee; list-style:none; color:#d35400; font-weight:500;">🔸 1x Sándwich Mechada XL <span style="color:#7f8c8d; font-size:11px;">($7.200)</span></li>
+                    <li style="padding:4px 0; border-bottom:1px dashed #eee; list-style:none; color:#d35400; font-weight:500;">🔸 1x Papas Fritas Balde Familiar <span style="color:#7f8c8d; font-size:11px;">($5.000)</span></li>
+                </ul>
+                <div style="margin-top: 10px; padding: 6px 10px; background-color: #ffc0a8; border-left: 3px solid #ff4800; border-radius: 4px; font-size: 13px; color: black; font-weight: bold;">
+                    📝 NOTA: Hamburguesas bien cocidas / Sin cebolla
+                </div>
+                <button onclick="gestionarCicloCocina(this)" style="margin-top:10px; width:100%; background:#27ae60; color:white; border:none; padding:8px; border-radius:4px; font-weight:bold; cursor:pointer;">✔ Entregar</button>
+            `;
+            contenedorCocina.appendChild(ticket1);
+            
+            // 📋 TICKET 02 (Mesa 12)
+            const ticket2 = document.createElement('div');
+            ticket2.style = baseTicketStyle;
+            ticket2.innerHTML = `
+                <div style="display:flex; justify-content:space-between; font-weight:bold; margin-bottom:4px; color:#2c3e50;">
+                    <span>📋 Ticket #2</span>
+                    <span class="ticket-mesa-header" data-raw-id="12" style="color:#c0392b;">Mesa 12</span>
+                </div>
+                <div style="font-size: 12px; color: #7f8c8d; margin-bottom: 6px; font-weight: 600;">🕒 Hora Pedido: 13:12</div>
+                <div class="ticket-status-label" style="font-size: 13px; font-weight: bold; color: #f39c12; margin-bottom: 8px;">Estado: Pendiente</div>
+                <ul style="padding-left:0; margin:0; margin-bottom: 5px;">
+                    <li style="padding:4px 0; border-bottom:1px dashed #eee; list-style:none; color:#d35400; font-weight:500;">🔸 1x Completo Italiano XL + Papas <span style="color:#7f8c8d; font-size:11px;">($3.800)</span></li>
+                    <li style="padding:4px 0; border-bottom:1px dashed #eee; list-style:none; color:#d35400; font-weight:500;">🔸 1x Nuggets de Pollo Safari x10 <span style="color:#7f8c8d; font-size:11px;">($4.200)</span></li>
+                    <li style="padding:4px 0; border-bottom:1px dashed #eee; list-style:none; color:#d35400; font-weight:500;">🔸 2x Sándwich Mechada XL <span style="color:#7f8c8d; font-size:11px;">($14.400)</span></li>
+                </ul>
+                <div style="margin-top: 10px; padding: 6px 10px; background-color: #ffc0a8; border-left: 3px solid #ff4800; border-radius: 4px; font-size: 13px; color: black; font-weight: bold;">
+                    📝 NOTA: Extra aderezo de mayonesa en los nuggets
+                </div>
+                <button onclick="gestionarCicloCocina(this)" style="margin-top:10px; width:100%; background:#27ae60; color:white; border:none; padding:8px; border-radius:4px; font-weight:bold; cursor:pointer;">✔ Entregar</button>
+            `;
+            contenedorCocina.appendChild(ticket2);
+            
+            // 🔥 📋 NUEVO TICKET 03 hacia abajo (Mesa 07)
+            const ticket3 = document.createElement('div');
+            ticket3.style = baseTicketStyle;
+            ticket3.innerHTML = `
+                <div style="display:flex; justify-content:space-between; font-weight:bold; margin-bottom:4px; color:#2c3e50;">
+                    <span>📋 Ticket #3</span>
+                    <span class="ticket-mesa-header" data-raw-id="07" style="color:#c0392b;">Mesa 07</span>
+                </div>
+                <div style="font-size: 12px; color: #7f8c8d; margin-bottom: 6px; font-weight: 600;">🕒 Hora Pedido: 12:50</div>
+                <div class="ticket-status-label" style="font-size: 13px; font-weight: bold; color: #f39c12; margin-bottom: 8px;">Estado: Pendiente</div>
+                <ul style="padding-left:0; margin:0; margin-bottom: 5px;">
+                    <li style="padding:4px 0; border-bottom:1px dashed #eee; list-style:none; color:#d35400; font-weight:500;">🔸 3x Hamburguesa Safari + Papas <span style="color:#7f8c8d; font-size:11px;">($19.500)</span></li>
+                    <li style="padding:4px 0; border-bottom:1px dashed #eee; list-style:none; color:#d35400; font-weight:500;">🔸 1x Papas Fritas Balde Familiar <span style="color:#7f8c8d; font-size:11px;">($5.000)</span></li>
+                </ul>
+                <div style="margin-top: 10px; padding: 6px 10px; background-color: #ffc0a8; border-left: 3px solid #ff4800; border-radius: 4px; font-size: 13px; color: black; font-weight: bold;">
+                    📝 NOTA: Todo para llevar, empacar aderezos por separado.
+                </div>
+                <button onclick="gestionarCicloCocina(this)" style="margin-top:10px; width:100%; background:#27ae60; color:white; border:none; padding:8px; border-radius:4px; font-weight:bold; cursor:pointer;">✔ Entregar</button>
+            `;
+            contenedorCocina.appendChild(ticket3);
+            
+            // 🔥 📋 NUEVO TICKET 04 hacia abajo (Mesa 19)
+            const ticket4 = document.createElement('div');
+            ticket4.style = baseTicketStyle;
+            ticket4.innerHTML = `
+                <div style="display:flex; justify-content:space-between; font-weight:bold; margin-bottom:4px; color:#2c3e50;">
+                    <span>📋 Ticket #4</span>
+                    <span class="ticket-mesa-header" data-raw-id="19" style="color:#c0392b;">Mesa 19</span>
+                </div>
+                <div style="font-size: 12px; color: #7f8c8d; margin-bottom: 6px; font-weight: 600;">🕒 Hora Pedido: 12:48</div>
+                <div class="ticket-status-label" style="font-size: 13px; font-weight: bold; color: #f39c12; margin-bottom: 8px;">Estado: Pendiente</div>
+                <ul style="padding-left:0; margin:0; margin-bottom: 5px;">
+                    <li style="padding:4px 0; border-bottom:1px dashed #eee; list-style:none; color:#d35400; font-weight:500;">🔸 2x Completo Italiano XL + Papas <span style="color:#7f8c8d; font-size:11px;">($7.600)</span></li>
+                </ul>
+                <div style="margin-top: 10px; padding: 6px 10px; background-color: #ffc0a8; border-left: 3px solid #ff4800; border-radius: 4px; font-size: 13px; color: black; font-weight: bold;">
+                    📝 NOTA: Todo para llevar, empacar aderezos por separado.
+                </div>
+                <button onclick="gestionarCicloCocina(this)" style="margin-top:10px; width:100%; background:#27ae60; color:white; border:none; padding:8px; border-radius:4px; font-weight:bold; cursor:pointer;">✔ Entregar</button>
+            `;
+            contenedorCocina.appendChild(ticket4);
+        }
+
+    </script>
+</body>
+</html>

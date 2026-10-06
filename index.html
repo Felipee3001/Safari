@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="es"> 
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acceso Administrativo Safari</title>
+        <style>
+        :root {
+            --primary-color: #15aa33;    
+            --secondary-color: #E67E22;  
+            --bg-dark: #1A252F;          
+            --white: #ffffff;
+            --gray-light: #F4F6F6;
+            --text-dark: #2C3E50;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+
+        body {
+            background-image: url("img/fondo_guepardo.jpg") !important;
+            background-size: cover !important;
+            background-position: center center !important;
+            background-repeat: no-repeat !important;
+            background-attachment: fixed !important;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            min-height: 100vh;
+            color: var(--text-dark);
+            overflow-x: hidden;
+            padding: 20px 20px 20px 80px !important;
+        }
+
+
+        /* ========================================================
+           🔮 CRISTALIZACIÓN AMPLIADA (ANCHO PERFECTO SIMÉTRICO)
+           ======================================================== */
+        .login-card {
+            background-color: rgba(243, 225, 215, 0.623) !important; 
+            backdrop-filter: blur(16px) !important; 
+            -webkit-backdrop-filter: blur(16px) !important;
+            width: 100% !important;
+            max-width: 700px !important;  
+            padding: 35px 35px !important;   
+            border-radius: 24px !important;   
+            box-shadow: 0 25px 55px rgba(255, 108, 50, 0.37) !important; 
+            border: 1px solid rgba(255, 255, 255, 0.5) !important; 
+            box-sizing: border-box;
+            text-align: center;
+            
+            animation: glassFadeUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        /* ========================================================
+           💥 EFECTO SHAKE (SACUDIDA DE ERROR)
+           ======================================================== */
+        .shake-animation {
+            animation: shakeEffect 0.4s cubic-bezier(.36,.07,.19,.97) both;
+            transform: translate3d(0, 0, 0);
+            border: 2px solid #F5B7B1 !important; /* Añade un borde rojo sutil durante la sacudida */
+        }
+
+        @keyframes shakeEffect {
+            10%, 90% { transform: translate3d(-4px, 0, 0); }
+            20%, 80% { transform: translate3d(8px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-8px, 0, 0); }
+            40%, 60% { transform: translate3d(4px, 0, 0); }
+        }
+
+        @keyframes glassFadeUp {
+            from { transform: translateY(15px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        /* --- LOGO Y SECCIONES --- */
+        
+        .login-header img {
+            max-width: 110px;
+            height: auto;
+            margin-bottom: 8px;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.15));
+        }
+
+        .login-header h2 {
+            font-size: 23px;
+            color: #126d08 !important; 
+            font-weight: 800;
+            letter-spacing: 0.5px;
+        }
+
+        .login-header p {
+            font-size: 12px;
+            color: #4A5568 !important; 
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin-top: 4px;
+            margin-bottom: 25px;
+        }
+
+        .error-alert {
+            background-color: rgba(250, 219, 216, 0.9);
+            color: #78281F;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 13px;
+            font-weight: 600;
+            border: 1px solid #F5B7B1;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        .form-group {
+            text-align: left;
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #2C3E50;
+            letter-spacing: 0.3px;
+        }
+
+        /* 🔮 CASILLAS DE TEXTO INTEGRADAS AL VIDRIO (BLINDADAS) */
+        .form-control {
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.75) !important; /* Fondo sutil para fundirse con el cristal */
+            border-radius: 8px !important;
+            padding: 12px !important;
+            border: 1px solid rgba(189, 195, 199, 0.6) !important;
+            color: #2C3E50 !important;
+            font-size: 14px;
+            font-weight: 500;
+            outline: none;
+            box-sizing: border-box;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+        }
+
+        /* Animación interactiva elástica al hacer clic en el casillero */
+        .form-control:focus {
+            background-color: #FFFFFF !important; /* Se vuelve blanco puro al escribir */
+            border-color: var(--primary-color) !important;
+            box-shadow: 0 0 0 4px rgba(18, 109, 8, 0.15) !important;
+            transform: scale(1.01);
+        }
+
+        /* 🚀 BOTÓN PRINCIPAL DE INGRESO REFORMADO */
+        .btn-login {
+            width: 100%;
+            padding: 14px;
+            background-color: var(--primary-color) !important;
+            color: #FFFFFF !important;
+            border: none;
+            border-radius: 8px !important;
+            font-size: 16px;
+            font-weight: 700 !important;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            margin-top: 5px;
+            box-shadow: 0 6px 16px rgba(18, 109, 8, 0.25) !important;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+        }
+
+        .btn-login:hover { 
+            background-color: #1A4021 !important; 
+            transform: translateY(-2px) !important;
+            box-shadow: 0 8px 22px rgba(18, 109, 8, 0.4) !important;
+        }
+
+        .btn-login:active {
+            transform: translateY(0) scale(0.98) !important;
+        }
+
+        /* --- CUADRO DE AYUDA DE ROLES RESPONSIVO --- */
+        /* Cuadro contenedor de ayuda suavizado */
+        .roles-helper {
+            margin-top: 25px !important;
+            background-color: rgba(236, 223, 179, 0.18) !important; /* Amarillo translúcido cristalino muy sutil */
+            border: 1.5px dashed rgba(230, 126, 34, 0.4) !important; /* Borde discontinuo fino */
+            border-radius: 14px !important;
+            padding: 15px !important;
+            box-shadow: inset 0 2px 6px rgba(0,0,0,0.02);
+            backdrop-filter: blur(4px);
+        }
+
+        .roles-helper h4 {
+            font-size: 11px !important;
+            color: #A04000 !important;
+            margin-bottom: 12px !important;
+            letter-spacing: 0.6px;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        .roles-grid {
+            display: grid !important;          
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)) !important;
+            gap: 10px !important;
+            width: 100% !important;
+            box-sizing: border-box;
+            margin-top: 5px;
+            justify-content: center !important; 
+        }
+
+        .role-credential {
+            background-color: #FFFFFF !important;
+            padding: 10px 12px !important;
+            border-radius: 10px !important;
+            border: 1px solid rgba(226, 232, 240, 0.8) !important;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04) !important;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-sizing: border-box;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+            
+            /* 💡 Permite que crezcan juntos si hay parejas, pero no se deforma si queda solo */
+            flex: 1 1 calc(50% - 10px) !important; 
+            max-width: 180px !important; /* Ancho máximo prolijo para que no se estire tosco */
+            min-width: 130px !important;
+        }
+
+        /* Efecto flotante elástico al pasar por los perfiles de prueba */
+        .role-credential:hover {
+            transform: translateY(-3px) !important; /* Brinco suave hacia arriba */
+            box-shadow: 0 8px 20px rgba(230, 126, 34, 0.18) !important; /* Proyecta un aura naranja sutil */
+            border-color: #E67E22 !important; /* Ilumina el borde al color corporativo */
+            background-color: #FFFFFF !important;
+        }
+        
+        .role-credential strong { 
+            display: block; 
+            color: #2C3E50 !important; 
+            font-size: 11px !important;
+            font-weight: 700;
+            margin-bottom: 2px; 
+        }
+
+        .role-credential span { 
+            color: #7F8C8D !important; 
+            font-size: 9.5px !important; 
+            font-weight: 500;
+            white-space: nowrap; /* Evita que el nombre del trabajador se corte feo */
+        }
+
+        .role-credential:active {
+            transform: translateY(-1px) scale(0.97) !important;
+        }
+    
+        /* REGLA MÓVIL EXCLUSIVA CELULARES */
+        @media (max-width: 440px) {
+            body { padding: 12px; }
+            .login-card { padding: 30px 20px !important; }
+            .roles-grid {
+                display: grid !important;
+                grid-template-columns: 1fr 1fr !important; /* Cuadrícula simétrica prolija en móviles mini */
+                gap: 10px !important;
+            }
+            .role-credential {
+                max-width: 100% !important;
+                padding: 10px 6px !important;
+            }
+            /* 🔥 EL SECRETO VISUAL: Fuerza al tercer botón (Admin) a centrarse y ocupar las dos columnas de forma armónica */
+            .role-credential:last-child {
+                grid-column: span 2 !important;
+                margin: 0 auto !important;
+                width: 100% !important;
+                max-width: 150px !important; /* Mantiene un tamaño prudente y elegante en el centro */
+            }
+        }
+    </style>
+
+
+        </style>
+
+</head>
+<body>
+    <!-- Tu contenedor .login-card existente sigue aquí abajo... -->
+    <div class="login-card">
+
+    <div class="login-card">
+        <div class="login-header">
+            <div style="display: flex; justify-content: center;">
+                <img src="img/logo_safari.png" alt="Logo Parque Safari" class="login-logo-safari">
+            </div>
+            <h2>PARQUE SAFARI</h2>
+            <p>Control de Acceso Autorizado</p>
+        </div>
+
+        <div id="local-error-alert" class="error-alert" style="display: none;">
+            Contraseña o usuario inválido para la sucursal.
+        </div>
+
+        <form id="login-local-form" onsubmit="validarAccesoLocal(event)">
+            <div class="form-group">
+                <label for="username">Nombre de Usuario o RUT</label>
+                <input type="text" id="username" class="form-control" placeholder="ej: Nombre / 11.111.111-1" required autocomplete="off">
+            </div>
+
+            <div class="form-group">
+                <label for="password">Contraseña de Red</label>
+                <div style="position: relative; width: 100%; box-sizing: border-box; display: block; padding: 0;">
+                    <input type="password" id="password" class="form-control" placeholder="••••••••" required style="padding-right: 40px !important;">
+                    <button type="button" onclick="toggleMostrarContrasenaLogin()" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; font-size: 16px; padding: 4px; display: flex; align-items: center; justify-content: center; z-index: 10;" title="Mostrar/Ocultar contraseña">
+                        <span id="ojo-icono-login">👁️</span>
+                    </button>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-login">Iniciar Sesión</button>
+        </form>
+
+        <div class="roles-helper">
+            <h4>Prueba de Roles (Hacer Clic para rellenar)</h4>
+            <div class="roles-grid">
+                <div class="role-credential" style="border-color: #7D6608;" onclick="cargarCredenciales('admin.safari', 'admin2026')">
+                    <strong style="color: #7D6608;">Perfil: Admin</strong>
+                    <span>Control Total</span>
+                </div>
+
+                <div class="role-credential" onclick="cargarCredenciales('cajero.safari', 'caja2026')">
+                    <strong>Perfil: Cajero</strong>
+                    <span>Acceso Ventas</span>
+                </div>
+                <div class="role-credential" onclick="cargarCredenciales('cocina.safari', 'chef2026')">
+                    <strong>Perfil: Cocina</strong>
+                    <span>Acceso Cocina</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+        <script>
+        function obtenerEmpleadosActivos() {
+            let empleados = JSON.parse(localStorage.getItem('safari_empleados')) || [
+                { id: 1, nombre: 'Operador Ventas 01', user: 'cajero.safari', pass: 'caja2026', rol: 'Cajero', activo: true },
+                { id: 2, nombre: 'Chef Ejecutivo Safari', user: 'cocina.safari', pass: 'chef2026', rol: 'Cocinero', activo: true }
+            ];
+            return empleados;
+        }
+
+        // DIBUJA LOS BOTONES DE PRUEBA EXCLUSIVAMENTE SI EL EMPLEADO ESTÁ ACTIVO
+        function renderBotonesLogin() {
+            const grid = document.querySelector('.roles-grid');
+            if (!grid) return;
+            grid.innerHTML = ''; // Limpiamos los botones fijos viejos
+
+            const lista = obtenerEmpleadosActivos();
+
+            lista.forEach(emp => {
+                // 🚫 SI EL ADMINISTRADOR LO SUSPENDIÓ, SE SALTA EL BOTÓN Y NO SE DIBUJA EN EL LOGIN
+                if (!emp.activo) return;
+
+                const div = document.createElement('div');
+                div.className = 'role-credential';
+                if (emp.user.includes('admin')) div.style.borderColor = '#7D6608';
+                
+                div.onclick = function() {
+                    cargarCredenciales(emp.user, emp.pass, emp.rol);
+                };
+
+                div.innerHTML = '<strong>Perfil: ' + emp.rol + '</strong><span>' + emp.nombre + '</span>';
+                grid.appendChild(div);
+            });
+
+            // Siempre agregamos el botón estático del administrador al final para que nunca pierda acceso
+            const divAdmin = document.createElement('div');
+            divAdmin.className = 'role-credential';
+            divAdmin.style.borderColor = '#7D6608';
+            divAdmin.onclick = function() {
+                cargarCredenciales('admin.safari', 'admin2026', 'Administrador');
+            };
+            divAdmin.innerHTML = '<strong style="color: #7D6608;">Perfil: Admin</strong><span>Control Total</span>';
+            grid.appendChild(divAdmin);
+        }
+
+        function cargarCredenciales(user, pass, rol) {
+            document.getElementById('username').value = user;
+            document.getElementById('password').value = pass;
+            sessionStorage.setItem('usuario_rol', rol);
+            document.getElementById('local-error-alert').style.display = 'none';
+
+            var inputPass = document.getElementById('password');
+            var icono = document.getElementById('ojo-icono-login');
+            if (inputPass && icono) {
+                inputPass.type = 'password';
+                icono.innerText = '👁️';
+            }
+
+        }
+
+        // ========================================================
+        // 💥 CONTROLADOR DE ACCESO LOCAL CON EFECTO SHAKE DE ERROR
+        // ========================================================
+        function validarAccesoLocal(event) {
+            if (event) event.preventDefault();
+            const user = document.getElementById('username').value.trim().toLowerCase();
+            const pass = document.getElementById('password').value;
+            const errorBox = document.getElementById('local-error-alert');
+            
+            // Capturamos la tarjeta de cristal para poder aplicarle la vibración
+            const loginCard = document.querySelector('.login-card');
+        
+            // Acceso directo invariable para el Administrador Global
+            if (user === 'admin.safari' && pass === 'admin2026') {
+                sessionStorage.setItem('usuario_rol', 'Administrador');
+                window.location.href = 'admin.html';
+                return;
+            }
+        
+            // BUSCAMOS AL EMPLEADO EN LA LISTA COMPARTIDA
+            const lista = obtenerEmpleadosActivos();
+            const cuentaEncontrada = lista.find(emp => emp.user === user && emp.pass === pass);
+        
+            if (cuentaEncontrada) {
+                // 🚫 VERIFICACIÓN DE SEGURIDAD ESTRICTA EN EL FORMULARIO MANUAL
+                if (!cuentaEncontrada.activo) {
+                    errorBox.innerText = "🚫 ACCESO RESTRINGIDO: Este operador se encuentra actualmente Suspendido por la administración.";
+                    errorBox.style.display = 'block';
+                    
+                    // 🔥 Dispara la sacudida porque el acceso está bloqueado
+                    dispararEfectoShake(loginCard);
+                } else {
+                    sessionStorage.setItem('usuario_rol', cuentaEncontrada.rol);
+                    window.location.href = 'prototipo.html';
+                }
+            } else {
+                errorBox.innerText = "⚠️ Credenciales incorrectas o usuario no registrado en Parque Safari.";
+                errorBox.style.display = 'block';
+                
+                // 🔥 Dispara la sacudida por credenciales erróneas
+                dispararEfectoShake(loginCard);
+            }
+        }
+
+        function dispararEfectoShake(elemento) {
+            if (!elemento) return;
+
+            // Remueve la clase por si ya existía de un intento fallido anterior
+            elemento.classList.remove('shake-animation');
+
+            // Forzamos un reflow en el navegador para reiniciar la animación de cero
+            void elemento.offsetWidth; 
+
+            // Agrega la clase que activa los fotogramas de vibración
+            elemento.classList.add('shake-animation');
+
+            // Quitamos la clase después de 400ms (cuando termina la animación) para dejar la tarjeta limpia
+            setTimeout(function() {
+                elemento.classList.remove('shake-animation');
+            }, 400);
+        }
+
+        // Ejecuta el renderizado dinámico de los botones apenas abre el login
+        document.addEventListener('DOMContentLoaded', renderBotonesLogin);
+
+        // ========================================================
+        // 👁️ FUNCIÓN INTERACTIVA: REVELAR / OCULTAR CLAVE EN LOGIN
+        // ========================================================
+        function toggleMostrarContrasenaLogin() {
+            var inputPass = document.getElementById('password');
+            var icono = document.getElementById('ojo-icono-login');
+            if (!inputPass || !icono) return;
+        
+            if (inputPass.type === 'password') {
+                inputPass.type = 'text';
+                icono.innerText = '🙈'; // Cambia a monito tapándose al revelar la clave
+            } else {
+                inputPass.type = 'password';
+                icono.innerText = '👁️';  // Vuelve al estado de oculto original
+            }
+        }
+    </script>
+
+</body>
+</html>
+
