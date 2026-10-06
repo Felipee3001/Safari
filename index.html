@@ -28,13 +28,12 @@
             background-repeat: no-repeat !important;
             background-attachment: fixed !important;
             display: flex;
-            justify-content: center !important;
+            justify-content: flex-start; 
             align-items: center;
             min-height: 100vh;
             color: var(--text-dark);
             overflow-x: hidden;
-            padding: 20px !important;
-            box-sizing: border-box;
+            padding: 20px 20px 20px 80px !important; 
         }
 
 
@@ -260,8 +259,14 @@
     
         /* REGLA MÓVIL EXCLUSIVA CELULARES */
         @media (max-width: 440px) {
-            body { padding: 12px; }
-            .login-card { padding: 30px 20px !important; }
+            body { 
+                padding: 15px !important;
+                justify-content: center !important; 
+            }
+            .login-card { 
+                padding: 30px 20px !important; 
+                max-width: 100% !important;
+            }
             .roles-grid {
                 display: grid !important;
                 grid-template-columns: 1fr 1fr !important; /* Cuadrícula simétrica prolija en móviles mini */
