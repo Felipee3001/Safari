@@ -28,12 +28,13 @@
             background-repeat: no-repeat !important;
             background-attachment: fixed !important;
             display: flex;
-            justify-content: flex-start;
+            justify-content: center !important;
             align-items: center;
             min-height: 100vh;
             color: var(--text-dark);
             overflow-x: hidden;
-            padding: 20px 20px 20px 80px !important;
+            padding: 20px !important;
+            box-sizing: border-box;
         }
 
 
@@ -320,22 +321,26 @@
             <button type="submit" class="btn-login">Iniciar Sesión</button>
         </form>
 
-        <div class="roles-helper">
+        <div class="roles-helper" style="width: 100%; max-width: 100%; box-sizing: border-box; margin-left: auto; margin-right: auto; padding: 15px !important;">
             <h4>Prueba de Roles (Hacer Clic para rellenar)</h4>
-            <div class="roles-grid">
-                <div class="role-credential" style="border-color: #7D6608;" onclick="cargarCredenciales('admin.safari', 'admin2026')">
+            <div class="roles-grid" style="display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 10px !important; width: 100% !important; box-sizing: border-box; justify-items: center; align-items: center;">
+                
+                <div class="role-credential" style="width: 100%; box-sizing: border-box; border-color: #bdc3c7;" onclick="cargarCredentials('cajero.safari', 'caja2026')">
+                    <strong>Perfil: Cajero</strong>
+                    <span>Operador Ventas 01</span>
+                </div>
+            
+                <div class="role-credential" style="width: 100%; box-sizing: border-box; border-color: #bdc3c7;" onclick="cargarCredentials('cocina.safari', 'chef2026')">
+                    <strong>Perfil: Cocinero</strong>
+                    <span>Chef Ejecutivo Safari</span>
+                </div>
+                
+                <!-- 👑 El botón de Admin se expande en las 2 columnas y se centra armónicamente -->
+                <div class="role-credential" style="grid-column: span 2 !important; width: 100%; max-width: 160px; box-sizing: border-box; border-color: #7D6608;" onclick="cargarCredentials('admin.safari', 'admin2026')">
                     <strong style="color: #7D6608;">Perfil: Admin</strong>
                     <span>Control Total</span>
                 </div>
-
-                <div class="role-credential" onclick="cargarCredenciales('cajero.safari', 'caja2026')">
-                    <strong>Perfil: Cajero</strong>
-                    <span>Acceso Ventas</span>
-                </div>
-                <div class="role-credential" onclick="cargarCredenciales('cocina.safari', 'chef2026')">
-                    <strong>Perfil: Cocina</strong>
-                    <span>Acceso Cocina</span>
-                </div>
+            
             </div>
         </div>
     </div>
